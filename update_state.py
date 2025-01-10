@@ -1,9 +1,9 @@
 from openpyxl import Workbook, load_workbook
 import os
-import time
 from datetime import datetime
 
 EXCEL_FILE = "data.xlsx"
+HTML_FILE = "index.html"
 
 # Function to get the last state from the Excel file
 def get_last_state():
@@ -29,6 +29,25 @@ def log_state(new_state):
     wb.save(EXCEL_FILE)
     print(f"Logged: {current_time}, {new_state}")
 
+# Function to update the HTML file with the current state
+def update_html(state):
+    with open(HTML_FILE, "r") as file:
+        lines = file.readlines()
+
+    updated_lines = []
+    for line in lines:
+        if "id=\"abdullah\"" in line:
+            if state == "On":
+                updated_lines.append('        <button id="abdullah" style="background-color: green; color: white;">Abdullah</button>\n')
+            else:
+                updated_lines.append('        <button id="abdullah" style="background-color: red; color: white;">Abdullah</button>\n')
+        else:
+            updated_lines.append(line)
+
+    with open(HTML_FILE, "w") as file:
+        file.writelines(updated_lines)
+    print(f"Updated HTML file with state: {state}")
+
 # Main function to toggle the state and log if changed
 def main():
     last_state = get_last_state()
@@ -38,6 +57,9 @@ def main():
 
     if new_state != last_state:
         log_state(new_state)
+
+    # Update the HTML file with the new state
+    update_html(new_state)
 
 if __name__ == "__main__":
     main()
