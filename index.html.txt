@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Toggle with Time</title>
+    <style>
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            margin: 10px;
+        }
+
+        #abdullah {
+            background-color: green;
+            color: white;
+        }
+
+        #on {
+            background-color: lightgreen;
+        }
+
+        #off {
+            background-color: lightcoral;
+        }
+    </style>
+</head>
+<body>
+    <h1>Button Toggle Example</h1>
+    <button id="on">On</button>
+    <button id="off">Off</button>
+    <button id="abdullah">Abdullah</button>
+    <p id="status">Status: N/A</p>
+    <p id="time">Time: N/A</p>
+
+    <script>
+        // Helper function to get current time in 12-hour format
+        function getCurrentTime() {
+            const now = new Date();
+            let hours = now.getHours();
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12 || 12; // Convert to 12-hour format
+            return `${hours}:${minutes} ${ampm}`;
+        }
+
+        // Function to send data to the backend
+        async function sendDataToServer(status) {
+            const time = getCurrentTime();
+            document.getElementById('status').innerText = `Status: ${status}`;
+            document.getElementById('time').innerText = `Time: ${time}`;
+
+            // Send data to the backend
+            await fetch('/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ time, status }),
+            });
+        }
+
+        // Event listener for On button
+        document.getElementById('on').addEventListener('click', () => {
+            sendDataToServer('On');
+            document.getElementById('abdullah').style.backgroundColor = 'green'; // Reset Abdullah button color
+        });
+
+        // Event listener for Off button
+        document.getElementById('off').addEventListener('click', () => {
+            sendDataToServer('Off');
+            document.getElementById('abdullah').style.backgroundColor = 'red'; // Change Abdullah button to red
+        });
+    </script>
+</body>
+</html>
