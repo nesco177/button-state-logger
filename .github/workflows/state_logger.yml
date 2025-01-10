@@ -1,36 +1,45 @@
-name: Log Button State and Update HTML
+name: Update Excel Log
 
 on:
+  push:
+    branches:
+      - main
   schedule:
-    - cron: "*/1 * * * *"  # Runs every minute
-  workflow_dispatch:  # Allows manual triggering of the workflow
+    - cron: '*/1 * * * *'  # Run every minute
 
 jobs:
-  log-state:
+  update_excel:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v3
+      # Step 1: Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: "3.x"
+      # Step 2: Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
 
-    - name: Install Dependencies
-      run: |
-        pip install openpyxl
+      # Step 3: Install dependencies
+      - name: Install openpyxl
+        run: |
+          python -m pip install --upgrade pip
+          pip install openpyxl
 
-    - name: Run State Update Script
-      run: python update_state.py
+      # Step 4: Run Python script to update Excel file
+      - name: Update Excel file
+        run: |
+          python update_excel.py
 
-    - name: Commit and Push Changes
-      run: |
-        git config --global user.name "GitHub Actions"
-        git config --global user.email "actions@github.com"
-        git add data.xlsx index.html
-        git commit -m "Update button state and HTML"
-        git push
-      env:
-        GITHUB_TOKEN: ${{secret.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 }}
+      # Step 5: Commit and push changes
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add data.xlsx
+          git commit -m "Update Excel log"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
