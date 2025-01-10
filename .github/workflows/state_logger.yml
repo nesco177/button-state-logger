@@ -33,4 +33,4 @@ jobs:
         git commit -m "Update button state and HTML"
         git push
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{secret.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 }}
