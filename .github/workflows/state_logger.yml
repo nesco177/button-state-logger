@@ -1,0 +1,36 @@
+name: Log Button State and Update HTML
+
+on:
+  schedule:
+    - cron: "*/1 * * * *"  # Runs every minute
+  workflow_dispatch:  # Allows manual triggering of the workflow
+
+jobs:
+  log-state:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.x"
+
+    - name: Install Dependencies
+      run: |
+        pip install openpyxl
+
+    - name: Run State Update Script
+      run: python update_state.py
+
+    - name: Commit and Push Changes
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+        git add data.xlsx index.html
+        git commit -m "Update button state and HTML"
+        git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
